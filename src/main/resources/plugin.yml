@@ -1,0 +1,9 @@
+name: IllegalCreator
+version: '${project.version}'
+main: me.txmc.illegalcreator.IllegalCreator
+authors: [ 254n_m, SevGaySix ]
+description: Leeeeeeeeeeeee
+commands:
+  illegalcreate:
+    aliases:
+      - ic
