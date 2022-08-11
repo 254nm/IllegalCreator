@@ -3,6 +3,9 @@ package me.txmc.illegalcreator.command;
 import me.txmc.illegalcreator.IllegalCreator;
 import me.txmc.illegalcreator.Utils;
 import me.txmc.illegalcreator.command.commands.EveryEnchant;
+import me.txmc.illegalcreator.command.commands.FillAllCommand;
+import me.txmc.illegalcreator.command.commands.StackAllCommand;
+import me.txmc.illegalcreator.command.commands.StackCommand;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -17,6 +20,9 @@ public class IllegalCreateCommand implements TabExecutor {
         this.plugin = plugin;
         subCommands = new HashMap<>();
         subCommands.put("everyench", new EveryEnchant(plugin));
+        subCommands.put("stackall", new StackAllCommand(plugin));
+        subCommands.put("fillall", new FillAllCommand(plugin));
+        subCommands.put("stack", new StackCommand(plugin));
     }
 
     @Override

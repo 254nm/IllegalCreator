@@ -49,6 +49,7 @@ public class EveryEnchant extends BaseCommand {
                         ench.add(tag);
                     });
                     item.getTag().set("ench", ench);
+                    sendMessage(sender, "&3Successfully applied all enchantments to&r&a %s&r", getItemName(item.getItem()));
                 } else sendMessage(sender, "&cYou must be holding an item in your main hand");
             } else sendMessage(sender, "&c " + getUsage());
         } else sendMessage(sender, "&cYou must be a player");

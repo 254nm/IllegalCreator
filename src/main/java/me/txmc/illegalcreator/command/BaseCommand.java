@@ -18,15 +18,15 @@ public abstract class BaseCommand extends Utils {
 
     public List<String> tabComplete(CommandSender sender, String[] args) {
         List<String> buf = new ArrayList<>();
-        List<String> commands = getPossibleArgs();
-        commands.sort(String::compareToIgnoreCase);
+        List<String> possibleArgs = getPossibleArgs();
+        possibleArgs.sort(String::compareToIgnoreCase);
         if (args.length == 1) {
             String first = args[0];
-            commands.forEach(s -> {
+            possibleArgs.forEach(s -> {
                 if (s.toLowerCase().startsWith(first)) buf.add(s);
             });
             return buf;
-        } else return commands;
+        } else return possibleArgs;
     }
 
     public abstract String getUsage();
