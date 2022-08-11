@@ -35,8 +35,9 @@ public class FillAllCommand extends BaseCommand implements Listener {
     public void execute(CommandSender sender, String[] args) throws Throwable {
         if (sender instanceof Player) {
             EntityPlayer player = fromSender(sender);
-            player.openContainer(new FillGUI(player.getBukkitEntity(), player.inventory.getItemInHand().cloneItemStack()));
-
+            ItemStack mainHand = player.inventory.getItemInHand();
+            player.openContainer(new FillGUI(player.getBukkitEntity(), mainHand.cloneItemStack()));
+           if (!mainHand.isEmpty()) mainHand.setCount(-1);
         } else sendMessage(sender, "&cYou must be a player");
     }
 
