@@ -119,13 +119,18 @@ public class Utils {
         } else inventory.setItem(firstEmpty, itemStack);
     }
 
-    public static void addAttribute(ItemStack item, UUID uuid, double amount, String attributeName, int operation) {
+    public static void addAttribute(ItemStack item, @Nullable UUID uuid, double amount, String attributeName, int operation, @Nullable String slot) {
         if (!item.hasTag()) item.setTag(new NBTTagCompound());
-        if (!item.getTag().hasKey("AttributeModifiers")) item.getTag().set("AttributeModifiers", new NBTTagCompound());
+        if (!item.getTag().hasKey("AttributeModifiers")) item.getTag().set("AttributeModifiers", new NBTTagList());
         if (uuid == null) uuid = UUID.randomUUID();
         if (operation < 0 || operation > 3) operation = 0;
-        NBTTagCompound attributeTag = GenericAttributes.a(new AttributeModifier(uuid, attributeName, amount, operation));
-        NBTTagList tagList = item.getTag().getList("AttributeModifiers", 10);
-        tagList.add(attributeTag);
+        NBTTagCompound attributeTag = new NBTTagCompound();
+        attributeTag.setUUID("", uuid);
+        attributeTag.setDouble("Amount", amount);
+        if (slot != null) attributeTag.setString("Slot", slot);
+        attributeTag.setString("AttributeName", attributeName);
+        attributeTag.setString("Name", attributeName);
+        attributeTag.setInt("Operation", operation);
+        item.getTag().getList("AttributeModifiers", 10).add(attributeTag);
     }
 }
