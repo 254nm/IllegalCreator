@@ -38,9 +38,8 @@ public class AttributesCommand extends BaseCommand {
             ItemStack item = player.inventory.getItemInHand();
             if (!item.isEmpty()) {
                 if (!item.hasTag()) item.setTag(new NBTTagCompound());
-
-            }
-        }
+            } else sendMessage(sender, "&cYou must be holding an item in your main hand");
+        } else sendMessage(sender, "&cYou must be a player");
     }
 
     @Override
