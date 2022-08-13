@@ -11,10 +11,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Utils {
     private static final String prefix = "&7[&r&6IllegalCreator&r&7]&r ";
@@ -120,5 +117,15 @@ public class Utils {
             BlockPosition pos = new BlockPosition(player.locX, player.locY, player.locZ);
             dropItem(player.world, pos, itemStack);
         } else inventory.setItem(firstEmpty, itemStack);
+    }
+
+    public static void addAttribute(ItemStack item, UUID uuid, double amount, String attributeName, int operation) {
+        if (!item.hasTag()) item.setTag(new NBTTagCompound());
+        if (!item.getTag().hasKey("AttributeModifiers")) item.getTag().set("AttributeModifiers", new NBTTagCompound());
+        if (uuid == null) uuid = UUID.randomUUID();
+        if (operation < 0 || operation > 3) operation = 0;
+        NBTTagCompound attributeTag = GenericAttributes.a(new AttributeModifier(uuid, attributeName, amount, operation));
+        NBTTagList tagList = item.getTag().getList("AttributeModifiers", 10);
+        tagList.add(attributeTag);
     }
 }
