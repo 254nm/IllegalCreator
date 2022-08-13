@@ -2,20 +2,33 @@ package me.txmc.illegalcreator.command.commands;
 
 import me.txmc.illegalcreator.IllegalCreator;
 import me.txmc.illegalcreator.command.BaseCommand;
-import net.minecraft.server.v1_12_R1.EntityPlayer;
-import net.minecraft.server.v1_12_R1.ItemStack;
-import net.minecraft.server.v1_12_R1.NBTTagCompound;
+import net.minecraft.server.v1_12_R1.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class AttributesCommand extends BaseCommand {
 
+    private final List<String> possibleArgs;
+
     public AttributesCommand(IllegalCreator plugin) {
         super(plugin);
+        possibleArgs = new ArrayList<>();
+        try {
+            for (Field field : GenericAttributes.class.getDeclaredFields()) {
+                if (field.getType() != IAttribute.class) continue;
+                IAttribute attribute = (IAttribute) field.get(null);
+                possibleArgs.add(attribute.getName());
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
+        possibleArgs.addAll(Arrays.asList("all", "random"));
+        possibleArgs.sort(String::compareToIgnoreCase);
     }
 
     @Override
@@ -32,7 +45,7 @@ public class AttributesCommand extends BaseCommand {
 
     @Override
     public List<String> getPossibleArgs() {
-        return Collections.emptyList();
+        return possibleArgs;
     }
 
     @Override

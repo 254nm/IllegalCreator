@@ -5,10 +5,7 @@ import me.txmc.illegalcreator.ICInventory;
 import me.txmc.illegalcreator.IllegalCreator;
 import me.txmc.illegalcreator.Utils;
 import me.txmc.illegalcreator.command.BaseCommand;
-import net.minecraft.server.v1_12_R1.EntityPlayer;
-import net.minecraft.server.v1_12_R1.Item;
-import net.minecraft.server.v1_12_R1.ItemShulkerBox;
-import net.minecraft.server.v1_12_R1.ItemStack;
+import net.minecraft.server.v1_12_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
@@ -107,7 +104,7 @@ public class FillAllCommand extends BaseCommand implements Listener {
             setItem(8, new ItemStack(Item.getById(160), 1, 15));
             setItem(7, new ItemStack(Item.getById(160), 1, 15));
             setItem(6, new ItemStack(Item.getById(160), 1, 15));
-            setItem(3, handItem);
+            setItem(3, handItem.cloneItemStack());
             setItem(4, setItemName(new ItemStack(Item.getById(160), 1, 5), "&aDo the thing"));
         }
     }
