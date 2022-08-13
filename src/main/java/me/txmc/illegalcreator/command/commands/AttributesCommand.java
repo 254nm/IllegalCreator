@@ -55,20 +55,20 @@ public class AttributesCommand extends BaseCommand {
                 switch (args[0]) {
                     case "all":
                         for (String arg : attributeNames) {
-                            addAttribute(item, null, amount, arg, operation, slot);
+                            addAttribute(item, amount, arg, operation, slot);
                         }
                         break;
                     case "random":
                         int rand = ThreadLocalRandom.current().nextInt(1, attributeNames.size());
                         String randomAttribute = attributeNames.get(rand);
-                        addAttribute(item, null,
+                        addAttribute(item,
                                 ThreadLocalRandom.current().nextDouble(0, Double.MAX_VALUE), randomAttribute,
                                 ThreadLocalRandom.current().nextInt(0, 3),
                                 slotNames.get(ThreadLocalRandom.current().nextInt(0, slotNames.size())));
                         break;
                     default:
                         String attribute = args[0];
-                        addAttribute(item, null, amount, attribute, operation, slot);
+                        addAttribute(item, amount, attribute, operation, slot);
                         break;
                 }
             } else sendMessage(sender, "&cYou must be holding an item in your main hand");
