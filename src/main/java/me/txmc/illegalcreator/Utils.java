@@ -151,14 +151,21 @@ public class Utils {
         } else inventory.setItem(firstEmpty, itemStack);
     }
 
-    public static void addAttribute(ItemStack item, UUID uuid, double amount, String attributeName, int operation) {
+    public static void addAttribute(ItemStack item, double amount, String attributeName, int operation, @Nullable String slot) {
         if (!item.hasTag()) item.setTag(new NBTTagCompound());
-        if (!item.getTag().hasKey("AttributeModifiers")) item.getTag().set("AttributeModifiers", new NBTTagCompound());
-        if (uuid == null) uuid = UUID.randomUUID();
+        if (!item.getTag().hasKey("AttributeModifiers")) item.getTag().set("AttributeModifiers", new NBTTagList());
         if (operation < 0 || operation > 3) operation = 0;
-        NBTTagCompound attributeTag = GenericAttributes.a(new AttributeModifier(uuid, attributeName, amount, operation));
-        NBTTagList tagList = item.getTag().getList("AttributeModifiers", 10);
-        tagList.add(attributeTag);
+        NBTTagCompound compound = item.getTag();
+        NBTTagList modifiers = compound.getList("AttributeModifiers", 10);
+        NBTTagCompound attributeTag = new NBTTagCompound();
+        attributeTag.set("UUIDLeast", new NBTTagInt(-1));
+        attributeTag.set("UUIDMost", new NBTTagInt(1));
+        attributeTag.set("Amount", new NBTTagDouble(amount));
+        if (slot != null) attributeTag.set("Slot", new NBTTagString(slot));
+        attributeTag.set("AttributeName", new NBTTagString(attributeName));
+        attributeTag.set("Name", new NBTTagString(attributeName));
+        attributeTag.setInt("Operation", operation);
+        modifiers.add(attributeTag);
     }
     public static void setLore(ItemStack item, String... lore) {
         if (!item.hasTag()) item.setTag(new NBTTagCompound());
