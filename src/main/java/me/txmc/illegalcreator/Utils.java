@@ -158,15 +158,13 @@ public class Utils {
         NBTTagCompound compound = item.getTag();
         NBTTagList modifiers = compound.getList("AttributeModifiers", 10);
         NBTTagCompound attributeTag = new NBTTagCompound();
-        attributeTag.set("UUIDLeast", new NBTTagInt(894654));
-        attributeTag.set("UUIDMost", new NBTTagInt(2872));
+        attributeTag.set("UUIDLeast", new NBTTagInt(-1));
+        attributeTag.set("UUIDMost", new NBTTagInt(1));
         attributeTag.set("Amount", new NBTTagDouble(amount));
         if (slot != null) attributeTag.set("Slot", new NBTTagString(slot));
         attributeTag.set("AttributeName", new NBTTagString(attributeName));
         attributeTag.set("Name", new NBTTagString(attributeName));
         attributeTag.setInt("Operation", operation);
         modifiers.add(attributeTag);
-        compound.set("AttributeModifers", modifiers);
-        item.setTag(compound);
     }
 }

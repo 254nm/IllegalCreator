@@ -35,6 +35,8 @@ public class AttributesCommand extends BaseCommand {
             t.printStackTrace();
         }
         possibleArgs.addAll(Arrays.asList("all", "random"));
+        possibleArgs.addAll(slotNames);
+        possibleArgs.addAll(Arrays.asList("0", "1", "2"));
         possibleArgs.sort(String::compareToIgnoreCase);
     }
 
@@ -62,7 +64,7 @@ public class AttributesCommand extends BaseCommand {
                         int rand = ThreadLocalRandom.current().nextInt(1, attributeNames.size());
                         String randomAttribute = attributeNames.get(rand);
                         addAttribute(item,
-                                ThreadLocalRandom.current().nextDouble(0, Double.MAX_VALUE), randomAttribute,
+                                ThreadLocalRandom.current().nextDouble(Integer.MIN_VALUE, Integer.MAX_VALUE), randomAttribute,
                                 ThreadLocalRandom.current().nextInt(0, 3),
                                 slotNames.get(ThreadLocalRandom.current().nextInt(0, slotNames.size())));
                         break;
