@@ -21,6 +21,7 @@ public class IllegalCreateCommand implements TabExecutor {
         subCommands.put("fillall", new FillAllCommand(plugin));
         subCommands.put("stack", new StackCommand(plugin));
         subCommands.put("attribute", new AttributesCommand(plugin));
+        subCommands.put("statistics", new StatisticsCommand(plugin));
     }
 
     @Override

@@ -59,6 +59,10 @@
             <url>https://repo.txmc.me/releases</url>
         </repository>
         <repository>
+            <id>local-repo</id>
+            <url>file://${project.basedir}/local-repo</url>
+        </repository>
+        <repository>
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
@@ -70,6 +74,11 @@
             <artifactId>paper-jar</artifactId>
             <version>1.12.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>me.txmc</groupId>
+            <artifactId>paperapiextensions</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

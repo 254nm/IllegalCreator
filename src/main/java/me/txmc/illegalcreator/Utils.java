@@ -8,10 +8,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.*;
 
 public class Utils {
     private static final String prefix = "&7[&r&6IllegalCreator&r&7]&r ";
@@ -77,6 +76,7 @@ public class Utils {
         });
         return buf;
     }
+
 
     /**
      * Will set the inventory contents of a ShulkerBox
@@ -159,5 +159,21 @@ public class Utils {
         NBTTagCompound attributeTag = GenericAttributes.a(new AttributeModifier(uuid, attributeName, amount, operation));
         NBTTagList tagList = item.getTag().getList("AttributeModifiers", 10);
         tagList.add(attributeTag);
+    }
+    public static void setLore(ItemStack item, String... lore) {
+        if (!item.hasTag()) item.setTag(new NBTTagCompound());
+        NBTTagCompound tag = item.getTag();
+        if (!tag.hasKey("display")) tag.set("display", new NBTTagCompound());
+        if (!tag.getCompound("display").hasKey("Lore")) tag.getCompound("display").set("Lore", new NBTTagList());
+        if (!tag.getCompound("display").hasKey("Lore")) tag.getCompound("display").hasKey("Lore");
+        NBTTagList nbtLore = tag.getCompound("display").getList("Lore", 10);
+        for (String str : lore) nbtLore.add(new NBTTagString(str));
+        tag.getCompound("display").set("Lore", nbtLore);
+    }
+    public static double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+        BigDecimal bd = BigDecimal.valueOf(value);
+        bd = bd.setScale(places, RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 }

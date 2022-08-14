@@ -1,6 +1,7 @@
 package me.txmc.illegalcreator.command.commands;
 
 import me.txmc.illegalcreator.IllegalCreator;
+import me.txmc.illegalcreator.ShulkerBox;
 import me.txmc.illegalcreator.command.BaseCommand;
 import net.minecraft.server.v1_12_R1.EntityPlayer;
 import net.minecraft.server.v1_12_R1.ItemShulkerBox;
@@ -28,10 +29,10 @@ public class StackAllCommand extends BaseCommand {
             ItemStack itemStack = player.inventory.getItemInHand();
             if (!itemStack.isEmpty()) {
                 if (itemStack.getItem() instanceof ItemShulkerBox) {
-                    Map<Byte, ItemStack> contents = getShulkerContents(itemStack);
+                    ShulkerBox shulkerBox = ShulkerBox.construct(itemStack);
                     if (args.length == 1) {
                         String arg = args[0].toLowerCase();
-                        for (ItemStack shulkerItem : contents.values()) {
+                        for (ItemStack shulkerItem : shulkerBox.getInventoryContent().values()) {
                             switch (arg) {
                                 case "max":
                                     shulkerItem.setCount(shulkerItem.getItem().getMaxStackSize());
@@ -50,11 +51,11 @@ public class StackAllCommand extends BaseCommand {
                             }
                         }
                     } else {
-                        for (ItemStack shulkerItem : contents.values()) {
+                        for (ItemStack shulkerItem : shulkerBox.getInventoryContent().values()) {
                             shulkerItem.setCount(127);
                         }
                     }
-                    setShulkerContents(itemStack, contents);
+                    shulkerBox.replaceInventoryContent(shulkerBox.getInventoryContent());
                     sendMessage(sender, "&3Successfully stacked everything in your shulkerbox");
                 } else sendMessage(sender, "&cYou must be holding a ShulkerBox");
             } else sendMessage(sender, "&cYou must be holding a ShulkerBox");
