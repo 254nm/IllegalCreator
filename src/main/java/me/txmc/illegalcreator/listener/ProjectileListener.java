@@ -45,7 +45,14 @@ public class ProjectileListener extends Trajectories implements Listener {
     @EventHandler
     public void onHit(ProjectileHitEvent event) {
         Projectile projectile = event.getEntity();
-        Location location = new Location(event.getEntity().getWorld(), event.getHitBlock().getX(), event.getHitBlock().getY(), event.getHitBlock().getZ());
+        Location location;
+        if (event.getHitBlock() == null) {
+            Location entityLoc = event.getHitEntity().getLocation();
+            location = new Location(event.getEntity().getWorld(), entityLoc.getX(), entityLoc.getY(), entityLoc.getZ());
+        } else {
+            Location blockLoc = event.getHitBlock().getLocation();
+            location = new Location(event.getEntity().getWorld(), blockLoc.getX(), blockLoc.getY(), blockLoc.getZ());
+        }
         BlockPosition actualLandingPos = new BlockPosition(location.getX(), location.getY(), location.getZ());
         broadcast("&a" + projectile.getClass().getSimpleName() + " has ACTUALLY landed at " + actualLandingPos);
     }
@@ -67,8 +74,6 @@ public class ProjectileListener extends Trajectories implements Listener {
             EntityFireball fireball = (EntityFireball) nmsEntity;
             velocity = new Vector(fireball.dirX, fireball.dirY, fireball.dirZ);
         }
-        System.out.println(velocity);
-        System.out.println("X: " + posX + " Y: " + posY + " Z: " + posZ);
         double motionX = velocity.getX();
         double motionY = velocity.getY();
         double motionZ = velocity.getZ();
@@ -82,7 +87,7 @@ public class ProjectileListener extends Trajectories implements Listener {
             Vec3D start = new Vec3D(posX, posY, posZ);
             Vec3D future = new Vec3D(fPosX, fPosY, fPosZ);
 
-            landing = world.rayTrace(start, future, false, true, false);
+            landing = world.rayTrace(start, future);
             hasLanded = landing != null && landing.a() != null;
 
             posX = fPosX;
@@ -93,9 +98,12 @@ public class ProjectileListener extends Trajectories implements Listener {
             motionZ *= motionM;
             motionY -= gravityM;
 
+            if (new Location(entity.getWorld(), posX, posY, posZ).getNearbyEntities(0.3, 0.3, 0.3).size() > 0) {
+                return new MovingObjectPosition(MovingObjectPosition.EnumMovingObjectType.ENTITY, new Vec3D(velocity.getX(), velocity.getY(), velocity.getZ()), nmsEntity.getDirection(), new BlockPosition(posX, posY, posZ));
+            }
+
             double distSquared = originalPosition.distanceSquared(posX, posY, posZ);
-            System.out.println(distSquared);
-            if (originalPosition.distanceSquared(posX, posY, posZ) > 48000) break;
+            if (distSquared > 48000) break;
             entity.getWorld().spawnParticle(Particle.BARRIER, posX, posY, posZ, 1);
         }
         return landing;
@@ -105,7 +113,7 @@ public class ProjectileListener extends Trajectories implements Listener {
         switch (entity.getType()) {
             case FIREBALL:
             case SMALL_FIREBALL:
-                return 1.08f;
+                return 1.10f;
             case WITHER_SKULL:
                 return 1.15f;
             default:
