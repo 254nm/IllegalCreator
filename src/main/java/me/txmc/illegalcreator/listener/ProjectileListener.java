@@ -1,8 +1,12 @@
 package me.txmc.illegalcreator.listener;
 
+import me.txmc.illegalcreator.Utils;
 import net.minecraft.server.v1_12_R1.*;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -17,10 +21,12 @@ public class ProjectileListener extends Trajectories implements Listener {
         EntityProjectile entity = (EntityProjectile) ((CraftEntity) projectile).getHandle();
         EntityPlayer player = (EntityPlayer) entity.getShooter();
         if (player == null) return;
+        Player bukkitPlayer = player.getBukkitEntity().getPlayer();
         BlockPosition position = getExpectedLandingPosition(player, entity);
         System.out.println(entity.getClass().getSimpleName() + " is EXPECTED to land at " + position);
         if (position == null || !entity.world.getChunkAt(position.getX(), position.getZ()).isLoaded()) {
             entity.die();
+            bukkitPlayer.sendMessage(ChatColor.translateAlternateColorCodes('&', "&4You cannot throw projectiles into unloaded chunks"));
             System.out.println("Removed a snowball from entering unloaded chunks");
         }
     }
@@ -65,6 +71,7 @@ public class ProjectileListener extends Trajectories implements Listener {
             motionY *= motionAdjustment;
             motionZ *= motionAdjustment;
             motionY -= getGravity(item);
+            player.getBukkitEntity().spawnParticle(Particle.BARRIER, posX, posY, posZ, 1);
         }
         return landingPos;
     }
