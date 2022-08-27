@@ -1,6 +1,8 @@
 package me.txmc.illegalcreator.listener;
 
+import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import me.txmc.illegalcreator.IllegalCreator;
+import me.txmc.illegalcreator.Utils;
 import net.minecraft.server.v1_12_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -8,7 +10,9 @@ import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,7 +20,23 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.util.Vector;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+
+/**
+ * @author SevJ6
+ * made this genius patch while fucking around
+ * */
 public class ProjectileListener extends Trajectories implements Listener {
+
+    private final RandomItem randomItem;
+
+    public ProjectileListener() {
+        randomItem = new RandomItem();
+    }
 
     @EventHandler
     public void onLaunch(ProjectileLaunchEvent event) {
@@ -24,11 +44,13 @@ public class ProjectileListener extends Trajectories implements Listener {
         MovingObjectPosition landing = traceEntity(projectile);
         if (landing == null || !projectile.getWorld().getChunkAt(landing.a().getX(), landing.a().getZ()).isLoaded()) {
             projectile.remove();
-            broadcast("&cRemoved " + projectile.getClass().getSimpleName() + " from entering unloaded chunks");
             return;
         }
+
         BlockPosition position = landing.a();
-        broadcast("&e" + projectile.getClass().getSimpleName() + " is EXPECTED to land at " + position);
+        World world = ((CraftWorld) projectile.getWorld()).getHandle();
+        Player player = (Player) projectile.getShooter();
+        ((CraftPlayer) player).getHandle().enderTeleportTo(position.getX(), position.getY(), position.getZ());
 
         Bukkit.getScheduler().runTaskLater(IllegalCreator.getPlugin(IllegalCreator.class), () -> {
             if (!projectile.isDead() && !projectile.isOnGround()) {
@@ -40,21 +62,6 @@ public class ProjectileListener extends Trajectories implements Listener {
 
     public void broadcast(String msg) {
         Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', msg));
-    }
-
-    @EventHandler
-    public void onHit(ProjectileHitEvent event) {
-        Projectile projectile = event.getEntity();
-        Location location;
-        if (event.getHitBlock() == null) {
-            Location entityLoc = event.getHitEntity().getLocation();
-            location = new Location(event.getEntity().getWorld(), entityLoc.getX(), entityLoc.getY(), entityLoc.getZ());
-        } else {
-            Location blockLoc = event.getHitBlock().getLocation();
-            location = new Location(event.getEntity().getWorld(), blockLoc.getX(), blockLoc.getY(), blockLoc.getZ());
-        }
-        BlockPosition actualLandingPos = new BlockPosition(location.getX(), location.getY(), location.getZ());
-        broadcast("&a" + projectile.getClass().getSimpleName() + " has ACTUALLY landed at " + actualLandingPos);
     }
 
     public MovingObjectPosition traceEntity(Entity entity) {
@@ -98,13 +105,8 @@ public class ProjectileListener extends Trajectories implements Listener {
             motionZ *= motionM;
             motionY -= gravityM;
 
-            if (new Location(entity.getWorld(), posX, posY, posZ).getNearbyEntities(0.3, 0.3, 0.3).size() > 0) {
-                return new MovingObjectPosition(MovingObjectPosition.EnumMovingObjectType.ENTITY, new Vec3D(velocity.getX(), velocity.getY(), velocity.getZ()), nmsEntity.getDirection(), new BlockPosition(posX, posY, posZ));
-            }
-
             double distSquared = originalPosition.distanceSquared(posX, posY, posZ);
             if (distSquared > 48000) break;
-            entity.getWorld().spawnParticle(Particle.BARRIER, posX, posY, posZ, 1);
         }
         return landing;
     }
